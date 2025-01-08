@@ -1,0 +1,49 @@
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  .container {
+    flex-direction: column;
+  }
+
+  .panel {
+    min-width: unset;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .timer {
+    font-size: 2em;
+  }
+
+  input,
+  select,
+  button {
+    font-size: 16px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  .panel {
+    padding: 15px;
+  }
+
+  .timer {
+    font-size: 1.8em;
+  }
+
+  input,
+  select {
+    min-width: 150px;
+  }
+}

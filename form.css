@@ -1,0 +1,60 @@
+.form-group {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+input,
+select,
+.time-entry-back {
+  background: var(--background-color);
+  box-shadow: var(--shadow-inner);
+}
+
+input,
+select {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: unset;
+  max-width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+button {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color),
+    var(--primary-color)
+  );
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+  width: auto;
+  min-width: unset;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  opacity: 0.9;
+}

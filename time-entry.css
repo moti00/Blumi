@@ -1,0 +1,137 @@
+.time-entry-container {
+  position: relative;
+  height: 90px;
+  margin-bottom: 10px;
+  overflow: visible;
+  box-sizing: border-box;
+}
+.time-entry-front,
+.time-entry-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  transition: width 0.3s ease;
+  box-sizing: border-box;
+}
+.time-entry-front {
+  background: var(--background-color);
+  border-radius: 16px;
+  border-left: 4px solid var(--primary-color);
+  z-index: 2;
+  cursor: pointer;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-outer);
+}
+.time-entry-front.collapsed {
+  width: calc(100% - 60px);
+}
+.time-entry-back {
+  background: var(--background-color);
+  border-radius: 16px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-right: 10px;
+  gap: 10px;
+  right: 0;
+  box-shadow: var(--shadow-inner);
+}
+.time-entry-action {
+  color: var(--secondary-color);
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding-right: 10px;
+}
+.time-entry-details {
+  flex: 1;
+}
+.time-entry-duration {
+  font-size: 1.8em;
+  font-family: monospace;
+  color: var(--text-color);
+  margin-left: 15px;
+  text-align: right;
+}
+#editTimeEntryModal .form-group {
+  margin-bottom: 15px;
+}
+.time-entry-action-divider {
+  width: 40px;
+  height: 2px;
+  background-color: var(--secondary-color);
+  margin: 0 5px;
+  border-radius: 1px;
+}
+
+.date-header.time-entry-delete-animation-2 {
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out,
+    margin 0.3s ease-in-out;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+.details-table {
+  width: 70%;
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.details-table td {
+  padding: 4px 0;
+}
+
+.details-table td:first-child {
+  text-align: right;
+  width: 50%;
+}
+
+.details-table td:last-child {
+  text-align: left;
+  width: 50%;
+}
+
+.time-entry-table {
+  width: 80%;
+  border-collapse: collapse;
+}
+
+.time-entry-table td {
+  padding: 2px 0;
+}
+
+.time-entry-table td:first-child {
+  text-align: right;
+  width: 50%;
+}
+
+.time-entry-table td:last-child {
+  text-align: left;
+  width: 50%;
+}
+
+.time-entry-delete-animation-1 {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transform: translateX(100px);
+  opacity: 0;
+}
+
+.time-entry-delete-animation-2 {
+  transition: height 0.3s ease-in-out, padding 0.3s ease-in-out,
+    margin 0.3s ease-in-out;
+  height: 0;
+  padding: 0;
+  margin: 0;
+}

@@ -1,0 +1,27 @@
+:root {
+  --primary-color: #ffa726;
+  --secondary-color: #ffc107;
+  --background-color: #f6f7f9;
+  --background-color-rgb: 246, 247, 249;
+  --text-color: #333;
+  --shadow-dark-color: rgba(0, 0, 0, 0.05);
+  --shadow-light-color: rgba(255, 255, 255, 1);
+  --shadow-outer: 8px 8px 10px var(--shadow-dark-color),
+    -8px -8px 10px var(--shadow-light-color);
+  --shadow-inner: inset 8px 8px 10px 0 var(--shadow-dark-color),
+    inset -8px -8px 10px 0 var(--shadow-light-color);
+  --card-bg: var(--background-color);
+  --border-color: #e0e0e0;
+  --entry-bg: var(--background-color);
+  --padding-top-bottom: 20px;
+}
+
+body {
+  direction: rtl;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--padding-top-bottom);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
