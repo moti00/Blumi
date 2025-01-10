@@ -1,4 +1,12 @@
 function showMainView() {
+  document
+    .querySelectorAll(".page")
+    .forEach((page) => page.classList.remove("is-active"));
+  document.getElementById("list").classList.add("is-active");
+  showListView();
+}
+
+function showListView() {
   document.getElementById("main-view").style.display = "block";
   document.getElementById("client-details").style.display = "none";
   document.getElementById("project-details").style.display = "none";
@@ -7,6 +15,32 @@ function showMainView() {
   renderClientList();
   updateProjectSelect();
   replaceFeatherIcons();
+}
+
+function showClientDetails(clientId) {
+  const client = clients.find((client) => client.id === clientId);
+  if (client) {
+    currentClient = client;
+    document.getElementById("main-view").style.display = "none";
+    document.getElementById("client-details").style.display = "block";
+    document.getElementById("project-details").style.display = "none";
+    document.getElementById("client-details-name").textContent = client.name;
+    renderProjects(client);
+  }
+}
+
+function showProjectDetails(projectId) {
+  const project = currentClient.projects.find(
+    (project) => project.id === projectId
+  );
+  if (project) {
+    currentProject = project;
+    document.getElementById("main-view").style.display = "none";
+    document.getElementById("client-details").style.display = "none";
+    document.getElementById("project-details").style.display = "block";
+    document.getElementById("project-details-name").textContent = project.name;
+    renderProjectDetails(project);
+  }
 }
 
 function renderClientList() {
@@ -164,7 +198,7 @@ function renderProjectDetails(project) {
       `
           : ""
       }
-      
+
       <tr>
         <td>${
           project.paymentType === "hourly" ? 'סה"כ לתשלום' : "יוצא לשעה"

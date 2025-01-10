@@ -1,0 +1,142 @@
+body {
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--background-color);
+  direction: rtl;
+}
+
+.content-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow-y: auto;
+  padding-bottom: 70px; /* גובה סרגל הניווט */
+  box-sizing: border-box;
+}
+
+.page {
+  display: none;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.page.is-active {
+  display: block;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--background-color);
+  box-shadow: var(--shadow-outer);
+  z-index: 100;
+  padding: 10px 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.4);
+  transition: color 0.3s;
+}
+
+.nav-item.is-active {
+  color: var(--primary-color);
+}
+
+.nav-item i {
+  font-size: 24px;
+}
+
+.nav-item span {
+  font-size: 12px;
+}
+.nav {
+  position: fixed;
+  bottom: 20px;
+  width: min(calc(100% - 32px), 450px);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: auto 16px 16px auto;
+  background-color: var(--background-color);
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: var(--shadow-outer);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 50px;
+  margin: 0 5px;
+  padding: 15px;
+  color: rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.nav-item.is-active {
+  color: var(--primary-color);
+}
+
+.nav-glow {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  filter: blur(20px);
+  opacity: 0.1;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+}
+
+.nav-item i {
+  font-size: 24px;
+}
+
+.nav-item span {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nav-indicator-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  display: flex;
+  justify-content: center;
+}
+
+.nav-indicator {
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border-radius: 10px;
+}
