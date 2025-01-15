@@ -1,0 +1,97 @@
+/* עיצוב סרגל הניווט התחתון */
+.nav {
+  position: fixed;
+  bottom: 20px;
+  width: min(calc(100% - 32px), 450px);
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin: auto;
+  background-color: var(--background-color);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-outer);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 0;
+  z-index: 100;
+}
+
+@media (max-width: 600px) {
+  .nav {
+    width: calc(100% - 32px);
+  }
+}
+
+/* עיצוב פריטי ניווט */
+.nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 50px;
+  margin: 0 5px;
+  padding: 8px;
+  color: var(--text-color);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav-item.is-active {
+  opacity: 1;
+  background: none;
+  color: var(--primary-color);
+}
+
+/* עיצוב זוהר הניווט */
+.nav-glow {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  filter: blur(20px);
+  opacity: 0.1;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+}
+
+.nav-item i {
+  font-size: 22px;
+}
+
+.nav-item span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* עיצוב סמן הניווט */
+.nav-indicator-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  display: flex;
+  justify-content: center;
+}
+
+.nav-indicator {
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border-radius: 10px;
+}

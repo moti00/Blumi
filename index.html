@@ -1,152 +1,417 @@
-<!DOCTYPE html>
-<html lang="he">
+<html dir="rtl">
   <head>
-    <meta charset="UTF-8" />
+    <!-- הגדרות בסיסיות לדף -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>דוח זמני עבודה</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="base.css" />
     <link rel="stylesheet" href="form.css" />
     <link rel="stylesheet" href="layout.css" />
     <link rel="stylesheet" href="components.css" />
     <link rel="stylesheet" href="time-entry.css" />
     <link rel="stylesheet" href="responsive.css" />
+    <link rel="stylesheet" href="bottom-bar.css" />
+    <link rel="stylesheet" href="settings.css" />
+    <link rel="manifest" href="/manifest.json" />
+    <style>
+      /* עיצוב מיכל התוכן הראשי */
+      .content-container {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 120px;
+        width: min(100%, 1150px);
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      /* עיצוב עמודי התוכן */
+      .content-page {
+        position: absolute;
+        width: calc(100% - 32px);
+        height: 100%;
+        font-size: 16px;
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        overflow-y: auto;
+        align-items: center;
+        padding: 0 16px 0 16px;
+      }
+
+      .content-page::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* עיצוב מיוחד לעמוד ההגדרות */
+      .content-page {
+        display: flex;
+
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* עיצוב עמוד התוכן הפעיל */
+      .content-page.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+      }
+    </style>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
+    <!-- מיכל התוכן הראשי -->
     <div class="content-container">
-      <div id="home" class="page is-active">
+      <!-- דף הבית -->
+      <div class="content-page active" id="home">
         <div class="logo"><img src="logo.svg" alt="logo" /></div>
       </div>
-
-      <div id="timer" class="page">
-        <div class="panel">
-          <div class="form-group">
-            <div class="clock">
-              <div class="hand hour"></div>
-              <div class="hand minute"></div>
-              <div class="hand second"></div>
+      <!-- דף הטיימר -->
+      <div class="content-page" id="timer">
+        <div class="timer-section">
+          <div class="clock">
+            <div class="hand hour"></div>
+            <div class="hand minute"></div>
+            <div class="hand second"></div>
+          </div>
+          <div id="display">
+            <div class="digit"><span>0</span></div>
+            <div class="digit"><span>0</span></div>
+            :
+            <div class="digit"><span>0</span></div>
+            <div class="digit"><span>0</span></div>
+            :
+            <div class="digit"><span>0</span></div>
+            <div class="digit"><span>0</span></div>
+          </div>
+          <label>בחר פרויקט:</label>
+          <select id="timerProjectSelect"></select>
+          <button id="controlButton">
+            <div class="button-content">
+              <div class="button-row" id="startText">הפעלה</div>
+              <div class="button-row" id="stopText">עצירה</div>
+              <div class="button-row" id="timeText"></div>
             </div>
-            <div id="display">
-              <div class="digit"><span>0</span></div>
-              <div class="digit"><span>0</span></div>
-              :
-              <div class="digit"><span>0</span></div>
-              <div class="digit"><span>0</span></div>
-              :
-              <div class="digit"><span>0</span></div>
-              <div class="digit"><span>0</span></div>
-            </div>
-            <label>בחר פרויקט:</label>
-            <select id="timerProjectSelect"></select>
-            <button id="controlButton">
-              <div class="button-content">
-                <div class="button-row" id="startText">הפעלה</div>
-                <div class="button-row" id="stopText">עצירה</div>
-                <div class="button-row" id="timeText"></div>
+          </button>
+        </div>
+      </div>
+      <!-- דף הרשימה -->
+      <div class="content-page" id="list">
+        <div id="app">
+          <div id="main-view">
+            <div class="container">
+              <div class="panel">
+                <div class="header-container">
+                  <h2>רשימת לקוחות</h2>
+                  <div
+                    class="add-icon tooltip"
+                    onclick="openAddClientModal()"
+                    data-tooltip="הוסף לקוח"
+                  >
+                    +
+                  </div>
+                </div>
+                <ul id="clientList" class="client-list"></ul>
               </div>
+            </div>
+          </div>
+
+          <div id="client-details" style="display: none">
+            <div class="nav-breadcrumb">
+              <a class="nav-link" onclick="showMainView()">לקוחות</a>
+              <span class="nav-separator">/</span>
+              <span class="nav-current" id="client-details-name"></span>
+            </div>
+            <div class="header-container">
+              <h2 id="client-details-name"></h2>
+              <div class="menu-dots" onclick="toggleClientMenu(event)">
+                <div class="menu-dot"></div>
+                <div class="menu-dot"></div>
+                <div class="menu-dot"></div>
+              </div>
+              <div class="dropdown-menu" id="clientMenu">
+                <div class="dropdown-item" onclick="openEditClientModal()">
+                  ערוך לקוח
+                </div>
+                <div class="dropdown-item" onclick="deleteClient()">
+                  מחק לקוח
+                </div>
+              </div>
+            </div>
+            <div id="client-projects"></div>
+          </div>
+
+          <div id="project-details" style="display: none">
+            <div class="nav-breadcrumb">
+              <a class="nav-link" onclick="showMainView()">לקוחות</a>
+              <span class="nav-separator">/</span>
+              <a class="nav-link" onclick="showClientDetails(currentClient)"
+                >לקוח</a
+              >
+              <span class="nav-separator">/</span>
+              <span class="nav-current" id="project-details-name"></span>
+            </div>
+            <div class="header-container">
+              <h2 id="project-details-name"></h2>
+              <div class="menu-dots" onclick="toggleProjectMenu(event)">
+                <div class="menu-dot"></div>
+                <div class="menu-dot"></div>
+                <div class="menu-dot"></div>
+              </div>
+              <div class="dropdown-menu" id="projectMenu">
+                <div class="dropdown-item" onclick="openEditProjectModal()">
+                  ערוך פרויקט
+                </div>
+                <div class="dropdown-item" onclick="deleteProject()">
+                  מחק פרויקט
+                </div>
+              </div>
+            </div>
+            <div id="project-info"></div>
+            <div id="time-entries"></div>
+          </div>
+
+          <!-- Add Client Modal -->
+          <div id="addClientModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeAddClientModal()">×</span>
+              <h2>הוסף לקוח חדש</h2>
+              <div class="form-group">
+                <label>שם הלקוח:</label>
+                <input type="text" id="clientName" />
+                <label>כתובת מייל:</label>
+                <input type="email" id="clientEmail" />
+                <label>טלפון:</label>
+                <input type="tel" id="clientPhone" />
+                <label>סוג תשלום ברירת מחדל:</label>
+                <select id="clientDefaultPaymentType">
+                  <option value="hourly">שעתי</option>
+                  <option value="global">גלובלי</option>
+                </select>
+                <label>סכום שעתי ברירת מחדל:</label>
+                <input type="number" id="clientDefaultHourlyRate" />
+                <label>סכום גלובלי ברירת מחדל:</label>
+                <input type="number" id="clientDefaultGlobalRate" />
+                <button onclick="addClientFromModal()">הוסף לקוח</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Project Modal -->
+          <div id="addProjectModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeAddProjectModal()"
+                >×</span
+              >
+              <h2>הוסף פרויקט חדש</h2>
+              <div class="form-group">
+                <label>שם הפרויקט:</label>
+                <input type="text" id="projectName" />
+                <label>תאריך התחלה:</label>
+                <input type="datetime-local" id="projectStartDate" />
+                <label>תאריך סיום:</label>
+                <input type="datetime-local" id="projectEndDate" />
+                <label>סוג תשלום:</label>
+                <select id="paymentType">
+                  <option value="hourly">שעתי</option>
+                  <option value="global">גלובלי</option>
+                </select>
+                <label>סכום:</label>
+                <input type="number" id="paymentAmount" />
+                <button onclick="addProjectFromModal()">הוסף פרויקט</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Time Entry Modal -->
+          <div id="addTimeEntryModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeAddTimeEntryModal()"
+                >×</span
+              >
+              <h2>הוסף רישום זמן</h2>
+              <div class="form-group">
+                <label>זמן התחלה:</label>
+                <input type="datetime-local" id="timeEntryStart" />
+                <label>זמן סיום:</label>
+                <input type="datetime-local" id="timeEntryEnd" />
+                <button onclick="addTimeEntryFromModal()">
+                  הוסף רישום זמן
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Client Modal -->
+          <div id="editClientModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeEditClientModal()"
+                >×</span
+              >
+              <h2>ערוך לקוח</h2>
+              <div class="form-group">
+                <label>שם הלקוח:</label>
+                <input type="text" id="editClientName" />
+                <label>כתובת מייל:</label>
+                <input type="email" id="editClientEmail" />
+                <label>טלפון:</label>
+                <input type="tel" id="editClientPhone" />
+                <label>סוג תשלום ברירת מחדל:</label>
+                <select id="editClientDefaultPaymentType">
+                  <option value="hourly">שעתי</option>
+                  <option value="global">גלובלי</option>
+                </select>
+                <label>סכום שעתי ברירת מחדל:</label>
+                <input type="number" id="editClientDefaultHourlyRate" />
+                <label>סכום גלובלי ברירת מחדל:</label>
+                <input type="number" id="editClientDefaultGlobalRate" />
+                <button onclick="saveClientEdit()">שמור שינויים</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Project Modal -->
+          <div id="editProjectModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeEditProjectModal()"
+                >×</span
+              >
+              <h2>ערוך פרויקט</h2>
+              <div class="form-group">
+                <label>שם הפרויקט:</label>
+                <input type="text" id="editProjectName" />
+                <label>תאריך התחלה:</label>
+                <input type="datetime-local" id="editProjectStartDate" />
+                <label>תאריך סיום:</label>
+                <input type="datetime-local" id="editProjectEndDate" />
+                <label>סוג תשלום:</label>
+                <select id="editPaymentType">
+                  <option value="hourly">שעתי</option>
+                  <option value="global">גלובלי</option>
+                </select>
+                <label>סטטוס:</label>
+                <select id="editProjectStatus">
+                  <option value="פעיל">פעיל</option>
+                  <option value="מושהה">מושהה</option>
+                  <option value="הסתיים">הסתיים</option>
+                </select>
+                <label>סכום:</label>
+                <input type="number" id="editPaymentAmount" />
+                <button onclick="saveProjectEdit()">שמור שינויים</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Time Entry Modal -->
+          <div id="editTimeEntryModal" class="modal">
+            <div class="modal-content">
+              <span class="modal-close" onclick="closeEditTimeEntryModal()"
+                >×</span
+              >
+              <h2>ערוך רישום זמן</h2>
+              <div class="form-group">
+                <label>זמן התחלה:</label>
+                <input type="datetime-local" id="editTimeEntryStart" />
+                <label>זמן סיום:</label>
+                <input type="datetime-local" id="editTimeEntryEnd" />
+                <button onclick="saveTimeEntryEdit()">שמור שינויים</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- דף ההגדרות -->
+      <div class="content-page" id="settings">
+        <!-- סעיף פרופיל משתמש -->
+        <div class="settings-section">
+          <h2>פרופיל משתמש</h2>
+          <div class="user-profile">
+            <div class="user-avatar">א</div>
+            <div class="user-info">
+              <div class="user-name">אורח</div>
+              <div class="join-date">הצטרף ב-1.1.2024</div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <button class="button">התנתק</button>
+            <button class="button danger">מחק חשבון</button>
+          </div>
+        </div>
+        <!-- סעיף הגדרות עיצוב -->
+        <div class="settings-section">
+          <h2>הגדרות עיצוב</h2>
+          <div class="setting-row">
+            <span>מצב כהה</span>
+            <label class="switch">
+              <input type="checkbox" id="darkModeToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <span>צבע ראשי</span>
+            <input
+              type="color"
+              id="primaryColor"
+              class="color-picker"
+              value="#ffa726"
+            />
+          </div>
+          <div class="setting-row">
+            <span>צבע משני</span>
+            <input
+              type="color"
+              id="secondaryColor"
+              class="color-picker"
+              value="#ffc107"
+            />
+          </div>
+          <div class="setting-row" id="resetContainer" style="display: none">
+            <button class="button" id="resetColors">
+              שחזר צבעי ברירת מחדל
             </button>
           </div>
         </div>
-      </div>
-
-      <div id="list" class="page">
-        <div id="main-view">
-          <div class="panel">
-            <div class="header-container">
-              <h2>רשימת לקוחות</h2>
-              <div
-                class="add-icon tooltip"
-                onclick="openAddClientModal()"
-                data-tooltip="הוסף לקוח"
-              >
-                +
-              </div>
-            </div>
-            <ul id="clientList" class="client-list"></ul>
+        <!-- סעיף הגדרות התראות -->
+        <div class="settings-section">
+          <h2>התראות</h2>
+          <div class="setting-row">
+            <span>התראות פוש</span>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
           </div>
         </div>
-
-        <div id="client-details" style="display: none">
-          <div class="nav-breadcrumb">
-            <a class="nav-link" onclick="showListView()">לקוחות</a>
-            <span class="nav-separator">/</span>
-            <span class="nav-current" id="client-details-name"></span>
-          </div>
-          <div class="header-container">
-            <h2 id="client-details-name"></h2>
-            <div class="menu-dots" onclick="toggleClientMenu(event)">
-              <div class="menu-dot"></div>
-              <div class="menu-dot"></div>
-              <div class="menu-dot"></div>
-            </div>
-            <div class="dropdown-menu" id="clientMenu">
-              <div class="dropdown-item" onclick="openEditClientModal()">
-                ערוך לקוח
-              </div>
-              <div class="dropdown-item" onclick="deleteClient()">מחק לקוח</div>
-            </div>
-          </div>
-          <div id="client-projects"></div>
-        </div>
-
-        <div id="project-details" style="display: none">
-          <div class="nav-breadcrumb">
-            <a class="nav-link" onclick="showListView()">לקוחות</a>
-            <span class="nav-separator">/</span>
-            <a class="nav-link" onclick="showClientDetails(currentClient)"
-              >לקוח</a
-            >
-            <span class="nav-separator">/</span>
-            <span class="nav-current" id="project-details-name"></span>
-          </div>
-          <div class="header-container">
-            <h2 id="project-details-name"></h2>
-            <div class="menu-dots" onclick="toggleProjectMenu(event)">
-              <div class="menu-dot"></div>
-              <div class="menu-dot"></div>
-              <div class="menu-dot"></div>
-            </div>
-            <div class="dropdown-menu" id="projectMenu">
-              <div class="dropdown-item" onclick="openEditProjectModal()">
-                ערוך פרויקט
-              </div>
-              <div class="dropdown-item" onclick="deleteProject()">
-                מחק פרויקט
-              </div>
-            </div>
-          </div>
-          <div id="project-info"></div>
-          <div id="time-entries"></div>
-        </div>
-      </div>
-
-      <div id="settings" class="page">
-        <h1>הגדרות</h1>
-        <p>כאן יופיעו ההגדרות</p>
       </div>
     </div>
 
+    <!-- סרגל הניווט התחתון -->
     <nav class="nav">
-      <a href="#" class="nav-item is-active" data-page="home">
-        <i class="bx bx-home"></i>
-        <span>בית</span>
-      </a>
-      <a href="#" class="nav-item" data-page="timer">
-        <i class="bx bx-timer"></i>
-        <span>טיימר</span>
-      </a>
-      <a href="#" class="nav-item" data-page="list">
-        <i class="bx bx-list-ul"></i>
-        <span>רשימה</span>
-      </a>
-      <a href="#" class="nav-item" data-page="settings">
+      <div class="nav-item" data-page="settings">
         <i class="bx bx-cog"></i>
         <span>הגדרות</span>
-      </a>
+      </div>
+      <div class="nav-item" data-page="list">
+        <i class="bx bx-list-ul"></i>
+        <span>רשימה</span>
+      </div>
+      <div class="nav-item" data-page="timer">
+        <i class="bx bx-timer"></i>
+        <span>טיימר</span>
+      </div>
+      <div class="nav-item is-active" data-page="home">
+        <i class="bx bx-home"></i>
+        <span>בית</span>
+      </div>
 
       <div class="nav-indicator-wrapper">
         <span class="nav-indicator"></span>
@@ -154,137 +419,136 @@
       <div class="nav-glow"></div>
     </nav>
 
-    <!-- Modals -->
-    <div id="addClientModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeAddClientModal()">×</span>
-        <h2>הוסף לקוח חדש</h2>
-        <div class="form-group">
-          <label>שם הלקוח:</label>
-          <input type="text" id="clientName" />
-          <label>כתובת מייל:</label>
-          <input type="email" id="clientEmail" />
-          <label>טלפון:</label>
-          <input type="tel" id="clientPhone" />
-          <label>סוג תשלום ברירת מחדל:</label>
-          <select id="clientDefaultPaymentType">
-            <option value="hourly">שעתי</option>
-            <option value="global">גלובלי</option>
-          </select>
-          <label>סכום שעתי ברירת מחדל:</label>
-          <input type="number" id="clientDefaultHourlyRate" />
-          <label>סכום גלובלי ברירת מחדל:</label>
-          <input type="number" id="clientDefaultGlobalRate" />
-          <button onclick="addClientFromModal()">הוסף לקוח</button>
-        </div>
-      </div>
-    </div>
+    <script>
+      // קבלת אלמנטים מהדף
+      const indicator = document.querySelector(".nav-indicator-wrapper");
+      const glow = document.querySelector(".nav-glow");
+      const items = document.querySelectorAll(".nav-item");
+      const pages = document.querySelectorAll(".content-page");
 
-    <div id="addProjectModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeAddProjectModal()">×</span>
-        <h2>הוסף פרויקט חדש</h2>
-        <div class="form-group">
-          <label>שם הפרויקט:</label>
-          <input type="text" id="projectName" />
-          <label>תאריך התחלה:</label>
-          <input type="datetime-local" id="projectStartDate" />
-          <label>תאריך סיום:</label>
-          <input type="datetime-local" id="projectEndDate" />
-          <label>סוג תשלום:</label>
-          <select id="paymentType">
-            <option value="hourly">שעתי</option>
-            <option value="global">גלובלי</option>
-          </select>
-          <label>סכום:</label>
-          <input type="number" id="paymentAmount" />
-          <button onclick="addProjectFromModal()">הוסף פרויקט</button>
-        </div>
-      </div>
-    </div>
+      // פונקציה לטעינת הגדרות מהזיכרון המקומי
+      const loadSettings = () => {
+        const darkMode = localStorage.getItem("darkMode") === "true";
+        const primaryColor = localStorage.getItem("primaryColor") || "#ffa726";
+        const secondaryColor =
+          localStorage.getItem("secondaryColor") || "#ffc107";
 
-    <div id="addTimeEntryModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeAddTimeEntryModal()">×</span>
-        <h2>הוסף רישום זמן</h2>
-        <div class="form-group">
-          <label>זמן התחלה:</label>
-          <input type="datetime-local" id="timeEntryStart" />
-          <label>זמן סיום:</label>
-          <input type="datetime-local" id="timeEntryEnd" />
-          <button onclick="addTimeEntryFromModal()">הוסף רישום זמן</button>
-        </div>
-      </div>
-    </div>
+        // עדכון הממשק לפי ההגדרות השמורות
+        document.querySelector("#darkModeToggle").checked = darkMode;
+        document.querySelector("#primaryColor").value = primaryColor;
+        document.querySelector("#secondaryColor").value = secondaryColor;
+        document.documentElement.setAttribute(
+          "data-theme",
+          darkMode ? "dark" : "light"
+        );
+        document.documentElement.style.setProperty(
+          "--primary-color",
+          primaryColor
+        );
+        document.documentElement.style.setProperty(
+          "--secondary-color",
+          secondaryColor
+        );
 
-    <div id="editClientModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeEditClientModal()">×</span>
-        <h2>ערוך לקוח</h2>
-        <div class="form-group">
-          <label>שם הלקוח:</label>
-          <input type="text" id="editClientName" />
-          <label>כתובת מייל:</label>
-          <input type="email" id="editClientEmail" />
-          <label>טלפון:</label>
-          <input type="tel" id="editClientPhone" />
-          <label>סוג תשלום ברירת מחדל:</label>
-          <select id="editClientDefaultPaymentType">
-            <option value="hourly">שעתי</option>
-            <option value="global">גלובלי</option>
-          </select>
-          <label>סכום שעתי ברירת מחדל:</label>
-          <input type="number" id="editClientDefaultHourlyRate" />
-          <label>סכום גלובלי ברירת מחדל:</label>
-          <input type="number" id="editClientDefaultGlobalRate" />
-          <button onclick="saveClientEdit()">שמור שינויים</button>
-        </div>
-      </div>
-    </div>
+        // הצגה/הסתרה של כפתור איפוס צבעים
+        const isDefault =
+          primaryColor === "#ffa726" && secondaryColor === "#ffc107";
+        document.querySelector("#resetContainer").style.display = isDefault
+          ? "none"
+          : "block";
+      };
 
-    <div id="editProjectModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeEditProjectModal()">×</span>
-        <h2>ערוך פרויקט</h2>
-        <div class="form-group">
-          <label>שם הפרויקט:</label>
-          <input type="text" id="editProjectName" />
-          <label>תאריך התחלה:</label>
-          <input type="datetime-local" id="editProjectStartDate" />
-          <label>תאריך סיום:</label>
-          <input type="datetime-local" id="editProjectEndDate" />
-          <label>סוג תשלום:</label>
-          <select id="editPaymentType">
-            <option value="hourly">שעתי</option>
-            <option value="global">גלובלי</option>
-          </select>
-          <label>סטטוס:</label>
-          <select id="editProjectStatus">
-            <option value="פעיל">פעיל</option>
-            <option value="מושהה">מושהה</option>
-            <option value="הסתיים">הסתיים</option>
-          </select>
-          <label>סכום:</label>
-          <input type="number" id="editPaymentAmount" />
-          <button onclick="saveProjectEdit()">שמור שינויים</button>
-        </div>
-      </div>
-    </div>
+      // פונקציה לשמירת צבעים
+      const setColors = (primary, secondary) => {
+        document.documentElement.style.setProperty("--primary-color", primary);
+        document.documentElement.style.setProperty(
+          "--secondary-color",
+          secondary
+        );
+        localStorage.setItem("primaryColor", primary);
+        localStorage.setItem("secondaryColor", secondary);
 
-    <div id="editTimeEntryModal" class="modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeEditTimeEntryModal()">×</span>
-        <h2>ערוך רישום זמן</h2>
-        <div class="form-group">
-          <label>זמן התחלה:</label>
-          <input type="datetime-local" id="editTimeEntryStart" />
-          <label>זמן סיום:</label>
-          <input type="datetime-local" id="editTimeEntryEnd" />
-          <button onclick="saveTimeEntryEdit()">שמור שינויים</button>
-        </div>
-      </div>
-    </div>
+        // הצגה/הסתרה של כפתור איפוס צבעים
+        const isDefault = primary === "#ffa726" && secondary === "#ffc107";
+        document.querySelector("#resetContainer").style.display = isDefault
+          ? "none"
+          : "block";
+      };
 
+      // אירוע שינוי מצב כהה
+      document
+        .querySelector("#darkModeToggle")
+        .addEventListener("change", (e) => {
+          const isDark = e.target.checked;
+          document.documentElement.setAttribute(
+            "data-theme",
+            isDark ? "dark" : "light"
+          );
+          localStorage.setItem("darkMode", isDark);
+        });
+
+      // אירוע שינוי צבע ראשי
+      document.querySelector("#primaryColor").addEventListener("input", (e) => {
+        setColors(
+          e.target.value,
+          document.querySelector("#secondaryColor").value
+        );
+      });
+
+      // אירוע שינוי צבע משני
+      document
+        .querySelector("#secondaryColor")
+        .addEventListener("input", (e) => {
+          setColors(
+            document.querySelector("#primaryColor").value,
+            e.target.value
+          );
+        });
+
+      // אירוע לחיצה על כפתור איפוס צבעים
+      document.querySelector("#resetColors").addEventListener("click", () => {
+        setColors("#ffa726", "#ffc107");
+        document.querySelector("#primaryColor").value = "#ffa726";
+        document.querySelector("#secondaryColor").value = "#ffc107";
+      });
+
+      // פונקציה להזזת הסמן והזוהר בניווט
+      function handleIndicator(el) {
+        items.forEach((item) => item.classList.remove("is-active"));
+        const width = `${el.offsetWidth}px`;
+        const left = `${el.offsetLeft}px`;
+        indicator.style.width = width;
+        indicator.style.left = left;
+        glow.style.width = width;
+        glow.style.left = left;
+        el.classList.add("is-active");
+      }
+
+      // פונקציה למעבר בין דפים
+      function switchPage(newPageId) {
+        const currentPage = document.querySelector(".content-page.active");
+        const newPage = document.getElementById(newPageId);
+        if (currentPage === newPage) return;
+        currentPage.classList.remove("active");
+        newPage.classList.add("active");
+      }
+
+      // טיפול באירועי לחיצה על פריטי ניווט
+      items.forEach((item) => {
+        item.addEventListener("click", () => {
+          handleIndicator(item);
+          switchPage(item.dataset.page);
+        });
+        // קריאה ראשונית להדגשת הפריט הפעיל
+        item.classList.contains("is-active") && handleIndicator(item);
+      });
+
+      // טעינת ההגדרות הראשוניות
+      loadSettings();
+
+      // כיוון הכתיבה מימין לשמאל
+      document.body.dir = "rtl";
+    </script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="utils.js"></script>
     <script src="data.js"></script>
@@ -295,6 +559,5 @@
     <script src="time-entry.js"></script>
     <script src="view.js"></script>
     <script src="main.js"></script>
-    <script src="navigation.js"></script>
   </body>
 </html>

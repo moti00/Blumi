@@ -1,12 +1,4 @@
 function showMainView() {
-  document
-    .querySelectorAll(".page")
-    .forEach((page) => page.classList.remove("is-active"));
-  document.getElementById("list").classList.add("is-active");
-  showListView();
-}
-
-function showListView() {
   document.getElementById("main-view").style.display = "block";
   document.getElementById("client-details").style.display = "none";
   document.getElementById("project-details").style.display = "none";
@@ -15,32 +7,6 @@ function showListView() {
   renderClientList();
   updateProjectSelect();
   replaceFeatherIcons();
-}
-
-function showClientDetails(clientId) {
-  const client = clients.find((client) => client.id === clientId);
-  if (client) {
-    currentClient = client;
-    document.getElementById("main-view").style.display = "none";
-    document.getElementById("client-details").style.display = "block";
-    document.getElementById("project-details").style.display = "none";
-    document.getElementById("client-details-name").textContent = client.name;
-    renderProjects(client);
-  }
-}
-
-function showProjectDetails(projectId) {
-  const project = currentClient.projects.find(
-    (project) => project.id === projectId
-  );
-  if (project) {
-    currentProject = project;
-    document.getElementById("main-view").style.display = "none";
-    document.getElementById("client-details").style.display = "none";
-    document.getElementById("project-details").style.display = "block";
-    document.getElementById("project-details-name").textContent = project.name;
-    renderProjectDetails(project);
-  }
 }
 
 function renderClientList() {
@@ -68,7 +34,7 @@ function renderClientList() {
   updateProjectSelect();
   const panelHTML = document.querySelector(".panel");
   if (panelHTML) {
-    const headerContainer = document.querySelector(".header-container");
+    const headerContainer = panelHTML.querySelector(".header-container");
     if (headerContainer) {
       const addIcon = headerContainer.querySelector(".add-icon");
       if (addIcon) {
@@ -82,12 +48,12 @@ function renderClientList() {
 function renderProjects(client) {
   const projectsContainer = document.getElementById("client-projects");
   projectsContainer.innerHTML = `
-    <div class="header-container">
-      <h2>רשימת פרויקטים</h2>
-      <div class="add-icon tooltip" data-tooltip="הוספת פרויקט חדש" onclick="openAddProjectModal()">+</div>
-    </div>
-    <ul class="project-list"></ul>
-  `;
+      <div class="header-container">
+        <h2>רשימת פרויקטים</h2>
+        <div class="add-icon tooltip" data-tooltip="הוספת פרויקט חדש" onclick="openAddProjectModal()">+</div>
+      </div>
+      <ul class="project-list"></ul>
+    `;
   const projectsList = projectsContainer.querySelector(".project-list");
   const sortedProjects = [...client.projects].sort(
     (a, b) => (b.lastUsed || 0) - (a.lastUsed || 0)
@@ -151,90 +117,94 @@ function renderProjectDetails(project) {
   const paymentTooltip = "הסכום יכול להשתנות כל עוד לא סיימו לעבוד על הפרויקט";
 
   projectInfo.innerHTML = `
-        <div id="total-time-container">
+      <div id="total-time-container">
         <div id="total-time-display">
           <span id="total-time-value">${totalTimeStr}</span>
           <span id="total-time-label">שעות עבודה</span>
         </div>
       </div>
-    <table class="details-table">
-      <tr>
-        <td>סוג תשלום:</td>
-        <td>${project.paymentType === "hourly" ? "שעתי" : "גלובלי"}</td>
-      </tr>
-      <tr>
-        <td>סכום:</td>
-        <td>${project.paymentAmount} ₪ ${
+      <table class="details-table">
+        <tr>
+          <td>סוג תשלום:</td>
+          <td>${project.paymentType === "hourly" ? "שעתי" : "גלובלי"}</td>
+        </tr>
+        <tr>
+          <td>סכום:</td>
+          <td>${project.paymentAmount} ₪ ${
     project.paymentType === "hourly" ? "לשעה" : "לפרויקט"
   }</td>
-      </tr>
-       <tr>
-        <td>תאריך התחלה:</td>
-        <td>${
-          project.startDate
-            ? new Date(project.startDate).toLocaleString()
-            : "לא הוגדר"
-        }</td>
-      </tr>
-       <tr>
-        <td>תאריך יעד:</td>
-        <td>${
-          project.endDate
-            ? new Date(project.endDate).toLocaleString()
-            : "לא הוגדר"
-        }</td>
-      </tr>
-      ${
-        project.actualEndDate
-          ? `
-        <tr>
-            <td>תאריך סיום:</td>
-            <td>${
-              project.actualEndDate
-                ? new Date(project.actualEndDate).toLocaleString()
-                : "לא הוגדר"
-            }</td>
         </tr>
-      `
-          : ""
-      }
-
-      <tr>
-        <td>${
-          project.paymentType === "hourly" ? 'סה"כ לתשלום' : "יוצא לשעה"
-        }:</td>
-        <td>${
-          project.paymentType === "hourly"
-            ? `${((totalSeconds / 3600) * project.paymentAmount).toFixed(2)} ₪`
-            : `${
-                totalSeconds > 0
-                  ? (project.paymentAmount / (totalSeconds / 3600)).toFixed(2)
-                  : "0"
-              } ₪ `
+        <tr>
+          <td>תאריך התחלה:</td>
+          <td>${
+            project.startDate
+              ? new Date(project.startDate).toLocaleString()
+              : "לא הוגדר"
+          }</td>
+        </tr>
+        <tr>
+          <td>תאריך יעד:</td>
+          <td>${
+            project.endDate
+              ? new Date(project.endDate).toLocaleString()
+              : "לא הוגדר"
+          }</td>
+        </tr>
+        ${
+          project.actualEndDate
+            ? `
+                <tr>
+                  <td>תאריך סיום:</td>
+                  <td>${
+                    project.actualEndDate
+                      ? new Date(project.actualEndDate).toLocaleString()
+                      : "לא הוגדר"
+                  }</td>
+                </tr>
+              `
+            : ""
         }
-         <span class="info-icon tooltip" data-tooltip="${paymentTooltip}">
-            <i data-feather="info" style="width: 12px; height: 12px;"></i>
-         </span>
-        </td>
-      </tr>
-       <tr>
-        <td>סטטוס:</td>
-        <td class="${statusClass}">${statusText} ${
+        <tr>
+          <td>${
+            project.paymentType === "hourly" ? 'סה"כ לתשלום' : "יוצא לשעה"
+          }:</td>
+          <td>
+            ${
+              project.paymentType === "hourly"
+                ? `${((totalSeconds / 3600) * project.paymentAmount).toFixed(
+                    2
+                  )} ₪`
+                : `${
+                    totalSeconds > 0
+                      ? (project.paymentAmount / (totalSeconds / 3600)).toFixed(
+                          2
+                        )
+                      : "0"
+                  } ₪ `
+            }
+            <span class="info-icon tooltip" data-tooltip="${paymentTooltip}">
+              <i data-feather="info" style="width: 12px; height: 12px;"></i>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>סטטוס:</td>
+          <td class="${statusClass}">${statusText} ${
     statusClass !== ""
       ? `<span class="info-icon tooltip" data-tooltip="${statusTooltip}">
-           <i data-feather="info" style="width: 12px; height: 12px;"></i>
-         </span>`
+                   <i data-feather="info" style="width: 12px; height: 12px;"></i>
+                 </span>`
       : ""
   }</td>
-      </tr>
-    </table>
-  `;
+        </tr>
+      </table>
+    `;
   timeEntries.innerHTML = `
-    <div class="header-container">
-      <h3>רשימת שעות</h3>
-      <div class="add-icon tooltip" data-tooltip="הוספת זמן עבודה" onclick="openAddTimeEntryModal()">+</div>
-    </div>
-  `;
+      <div class="header-container">
+        <h3>רשימת שעות</h3>
+        <div class="add-icon tooltip" data-tooltip="הוספת זמן עבודה" onclick="openAddTimeEntryModal()">+</div>
+      </div>
+    `;
   const entriesByDate = {};
   project.timeEntries.forEach((entry) => {
     const date = new Date(entry.startTime);
@@ -274,36 +244,37 @@ function renderProjectDetails(project) {
       const startTime = new Date(entry.startTime);
       const endTime = new Date(entry.endTime);
       frontDiv.innerHTML = `
-        <div class="time-entry-details">
-          <table class="time-entry-table">
-            <tr>
-              <td>זמן התחלה:</td>
-              <td>${startTime.toLocaleTimeString()}</td>
-            </tr>
-            <tr>
-              <td>זמן סיום:</td>
-              <td>${endTime.toLocaleTimeString()}</td>
-            </tr>
-            ${
-              project.paymentType === "hourly"
-                ? `
-            <tr>
-              <td>סכום:</td>
-              <td>${entryPayment.toFixed(2)} ₪</td>
-            </tr>`
-                : ""
-            }
-          </table>
-        </div>
-        <div class="time-entry-duration">${timeStr}</div>
-      `;
+          <div class="time-entry-details">
+            <table class="time-entry-table">
+              <tr>
+                <td>זמן התחלה:</td>
+                <td>${startTime.toLocaleTimeString()}</td>
+              </tr>
+              <tr>
+                <td>זמן סיום:</td>
+                <td>${endTime.toLocaleTimeString()}</td>
+              </tr>
+              ${
+                entryPayment !== null
+                  ? `
+                      <tr>
+                        <td>תשלום:</td>
+                        <td>${entryPayment.toFixed(2)} ₪</td>
+                      </tr>
+                    `
+                  : ""
+              }
+            </table>
+          </div>
+          <div class="time-entry-duration">${timeStr}</div>
+        `;
       const backDiv = document.createElement("div");
       backDiv.className = "time-entry-back";
       backDiv.innerHTML = `
-        <button class="time-entry-action" onclick="openEditTimeEntryModal(${entry.id})" data-feather="edit-2"></button>
-        <div class="time-entry-action-divider"></div>
-        <button class="time-entry-action" onclick="deleteTimeEntry(${entry.id})" data-feather="trash-2"></button>
-      `;
+          <button class="time-entry-action" onclick="openEditTimeEntryModal('${entry.id}')" data-feather="edit-2"></button>
+          <div class="time-entry-action-divider"></div>
+          <button class="time-entry-action" onclick="deleteTimeEntry('${entry.id}')" data-feather="trash-2"></button>
+        `;
       div.appendChild(backDiv);
       div.appendChild(frontDiv);
       timeEntries.appendChild(div);

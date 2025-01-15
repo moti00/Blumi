@@ -1,3 +1,25 @@
+.timer-section {
+  margin-bottom: 20px;
+  background: var(--card-bg);
+
+  padding: 15px 20px;
+  margin: 20px;
+
+  width: calc(100% - 40px);
+  max-width: 600px;
+}
+
+.timer-section {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 15px 20px;
+  margin: 20px;
+  box-shadow: var(--shadow-outer);
+  width: calc(100% - 40px);
+  max-width: 600px;
+  margin-bottom: 120px;
+}
+
 .time-entry-container {
   position: relative;
   height: 90px;

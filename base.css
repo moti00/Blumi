@@ -1,9 +1,9 @@
+/* הגדרות גלובליות ומשתנים */
 :root {
   --primary-color: #ffa726;
   --secondary-color: #ffc107;
   --background-color: #f6f7f9;
   --background-color-rgb: 246, 247, 249;
-  --text-color: #333;
   --shadow-dark-color: rgba(0, 0, 0, 0.05);
   --shadow-light-color: rgba(255, 255, 255, 1);
   --shadow-outer: 8px 8px 10px var(--shadow-dark-color),
@@ -13,15 +13,32 @@
   --card-bg: var(--background-color);
   --border-color: #e0e0e0;
   --entry-bg: var(--background-color);
-  --padding-top-bottom: 20px;
+  --icon-color: rgba(0, 0, 0, 0.7);
+  --text-color: #333;
+  --section-title-color: #666;
 }
 
+/* מצב כהה */
+[data-theme="dark"] {
+  --background-color: #1a1a1a;
+  --shadow-dark-color: rgba(0, 0, 0, 0.3);
+  --shadow-light-color: rgba(255, 255, 255, 0.05);
+  --border-color: #333;
+  --text-color: #fff;
+  --section-title-color: #aaa;
+  --card-bg: #242424;
+  --icon-color: rgba(255, 255, 255, 0.7);
+}
+
+/* עיצוב בסיסי של הדף */
 body {
-  direction: rtl;
-  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: var(--padding-top-bottom);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--background-color);
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
   color: var(--text-color);
 }

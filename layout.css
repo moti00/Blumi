@@ -16,7 +16,6 @@
   margin: 0 auto 20px;
   padding: 35px;
 }
-.panel,
 .client-item,
 .project-item,
 .time-entry-front,
@@ -27,8 +26,13 @@
 }
 .panel {
   flex: 1;
-  padding: 20px;
+  width: 100;
   border-radius: 16px;
+  border-radius: 15px;
+  margin: 0px 20px;
+
+  width: calc(100% - 40px);
+  max-width: 600px;
 }
 .client-list,
 .project-list {
