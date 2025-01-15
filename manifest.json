@@ -1,6 +1,6 @@
 {
   "name": "בלומי פוגל",
-  "short_name": "PWA",
+  "short_name": "בלומי",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
