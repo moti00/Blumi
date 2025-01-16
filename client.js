@@ -103,7 +103,7 @@ function showClientDetails(clientId) {
             <td>${client.phone || "-"}</td>
           </tr>
           <tr>
-            <td>סוג תשלום ברירת מחדל:</td>
+            <td>תשלום ברירת מחדל:</td>
             <td>${
               client.defaultPaymentType === "hourly" ? "שעתי" : "גלובלי"
             }</td>

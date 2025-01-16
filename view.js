@@ -273,7 +273,7 @@ function renderProjectDetails(project) {
       backDiv.innerHTML = `
           <button class="time-entry-action" onclick="openEditTimeEntryModal('${entry.id}')" data-feather="edit-2"></button>
           <div class="time-entry-action-divider"></div>
-          <button class="time-entry-action" onclick="deleteTimeEntry('${entry.id}')" data-feather="trash-2"></button>
+          <button class="time-entry-action" onclick="deleteTimeEntry(${entry.id})" data-feather="trash-2"></button>
         `;
       div.appendChild(backDiv);
       div.appendChild(frontDiv);

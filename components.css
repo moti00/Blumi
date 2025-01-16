@@ -15,6 +15,7 @@ h2 {
 #app {
   background: var(--card-bg);
   width: 100%;
+  margin-bottom: 130px;
 }
 
 .client-item,
@@ -195,12 +196,15 @@ span.project-time {
   border-radius: 10px;
   background: var(--background-color);
   cursor: pointer;
+  opacity: 0.7;
+  font-weight: bold;
   transition: all 0.3s;
 }
 
 .dropdown-item:hover {
-  background: #f0f0f0;
+  box-shadow: var(--shadow-inner);
   font-weight: bold;
+  opacity: 1;
 }
 
 .modal {
