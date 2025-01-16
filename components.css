@@ -14,12 +14,7 @@ h2 {
 
 #app {
   background: var(--card-bg);
-
-  padding: 15px 20px;
-
-  width: calc(100% - 40px);
-  max-width: 600px;
-  margin-bottom: 120px;
+  width: 100%;
 }
 
 .client-item,
