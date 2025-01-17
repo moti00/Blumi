@@ -1,18 +1,30 @@
+// משתנה שיכיל את ה-interval של הטיימר
 let currentTimer = null;
+// משתנה שיכיל את זמן ההתחלה של הטיימר
 let startTime = null;
+// משתנה בוליאני שבודק אם הטיימר רץ או לא
 let isRunning = false;
+// משתנה שיכיל את כמות השניות שעברו
 let seconds = 0;
+// משתנה שמכיל את המצב של הכפתור (התחל, עצור, זמן)
 let buttonState = "start";
 
+// מקבלת את אלמנט ה-display
 const display = document.getElementById("display");
+// מקבלת את אלמנט הכפתור
 const controlButton = document.getElementById("controlButton");
+// מקבלת את אלמנט התוכן של הכפתור
 let buttonContent = controlButton.querySelector(".button-content");
+// מקבלת את אלמנט הטקסט של הזמן
 const timeText = document.getElementById("timeText");
+// מקבלת את כל אלמנטי הספרות של הטיימר
 const digits = display.querySelectorAll(".digit span");
+// מקבלת את אלמנטי המחוגים של השעון
 const hourHand = document.querySelector(".hour");
 const minuteHand = document.querySelector(".minute");
 const secondHand = document.querySelector(".second");
 
+// פונקציה שמקבלת סך הכל שניות ומחזירה מחרוזת זמן בפורמט hh:mm:ss
 function formatTime(totalSeconds) {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -23,6 +35,7 @@ function formatTime(totalSeconds) {
   )}:${String(seconds).padStart(2, "0")}`;
 }
 
+// פונקציה שמעדכנת את התצוגה של הטיימר
 function updateDisplay() {
   const time = formatTime(seconds).replace(/:/g, "");
   for (let i = 0; i < 6; i++) {
@@ -44,6 +57,7 @@ function updateDisplay() {
   }
 }
 
+// פונקציה שמעדכנת את השעון האנלוגי
 function updateClock() {
   const secondsDegrees = (seconds % 60) * 6;
   const minutesDegrees = ((seconds / 60) % 60) * 6;
@@ -62,6 +76,7 @@ function updateClock() {
   secondHand.offsetHeight;
 }
 
+// פונקציה שמאפסת את השעון האנלוגי
 function resetClock() {
   secondHand.style.transition = "transform 1s ease-in-out";
   minuteHand.style.transition = "transform 1s ease-in-out";
@@ -78,10 +93,13 @@ function resetClock() {
   }, 1000);
 }
 
+// פונקציה שמתחילה את הטיימר
 function startTimer() {
   if (!isRunning) {
     isRunning = true;
     startTime = new Date();
+    // שמור את רישום הזמן כאן (השתמש בפונקציה הקיימת שלך)
+    saveTimeEntry(0, true);
     currentTimer = setInterval(() => {
       seconds++;
       updateDisplay();
@@ -96,13 +114,16 @@ function startTimer() {
   }
 }
 
+// פונקציה שעוצרת את הטיימר
 function stopTimer() {
   if (isRunning) {
     isRunning = false;
     clearInterval(currentTimer);
     const finalTime = formatTime(seconds);
+    const endTime = new Date();
+    const duration = Math.floor((endTime - startTime) / 1000);
     // שמור את רישום הזמן כאן (השתמש בפונקציה הקיימת שלך)
-    saveTimeEntry(seconds);
+    saveTimeEntry(duration);
     seconds = 0;
     updateDisplay();
     resetClock();
@@ -115,6 +136,7 @@ function stopTimer() {
   }
 }
 
+// פונקציה שמפעילה את האנימציה של הכפתור
 function animateButton(action, finalTime = "") {
   switch (action) {
     case "start":
@@ -150,6 +172,7 @@ function animateButton(action, finalTime = "") {
   }
 }
 
+// פונקציה שמפעילה או עוצרת את הטיימר
 function toggleTimer() {
   if (buttonState === "start") {
     startTimer();
@@ -158,7 +181,48 @@ function toggleTimer() {
   }
 }
 
+// פונקציה שמחפשת רישום זמן לא גמור
+function loadUnfinishedTimeEntry() {
+  for (const client of clients) {
+    for (const project of client.projects) {
+      const unfinishedEntry = project.timeEntries.find(
+        (entry) => entry.endTime === null
+      );
+      if (unfinishedEntry) {
+        return { entry: unfinishedEntry, projectId: project.id };
+      }
+    }
+  }
+  return null;
+}
+
 resetClock();
 
 // עדכון event listener לכפתור החדש
 controlButton.addEventListener("click", toggleTimer);
+
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof feather !== "undefined") {
+    replaceFeatherIcons();
+  }
+  // טעינת רישום זמן לא גמור
+  const unfinished = loadUnfinishedTimeEntry();
+  if (unfinished) {
+    const { entry, projectId } = unfinished;
+    //חישוב הזמן שעבר
+    const startTime = new Date(entry.startTime);
+    seconds = Math.floor((Date.now() - startTime) / 1000);
+    // מפעילה את הטיימר
+    startTimer();
+    updateDisplay();
+    updateClock();
+    // מגדירים את הפרויקט הנוכחי שנבחר
+    document.getElementById("timerProjectSelect").value = projectId;
+
+    const button = document.getElementById("startTimer");
+    if (button) {
+      button.textContent = "עצור";
+      button.style.background = "#dc3545";
+    }
+  }
+});
