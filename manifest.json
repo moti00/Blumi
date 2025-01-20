@@ -2,7 +2,7 @@
   "name": "בלומי פוגל",
   "short_name": "בלומי",
   "description": "אפליקציית ניהול זמן ומשימות",
-  "start_url": "./index.html",  
+  "start_url": "index.html",  
  "id": "https://moti00.github.io/Blumi/",
   "display": "standalone",
   "background_color": "#ffffff",
