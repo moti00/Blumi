@@ -11,6 +11,14 @@
     <link rel="stylesheet" href="bottom-bar.css" />
     <link rel="stylesheet" href="settings.css" />
     <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="" id="theme-color" />
+    <script>
+      fetch("/manifest.json")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("theme-color").content = data.theme_color;
+        });
+    </script>
     <style>
       /* עיצוב מיכל התוכן הראשי */
       .content-container {
@@ -556,18 +564,18 @@
     <script src="view.js"></script>
     <script src="main.js"></script>
     <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/service-worker.js")
-            .then((registration) => {
-              console.log("Service Worker registered:", registration);
-            })
-            .catch((error) => {
-              console.error("Service Worker registration failed:", error);
-            });
-        });
+      function updateThemeColor() {
+        const themeColorMetaTag = document.getElementById("theme-color");
+        const backgroundColor = getComputedStyle(
+          document.documentElement
+        ).getPropertyValue("--background-color");
+        themeColorMetaTag.setAttribute("content", backgroundColor);
       }
+
+      // עדכן את צבע הנושא בעת טעינת הדף ובכל שינוי של צבע הרקע
+      window.addEventListener("load", updateThemeColor);
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      darkModeToggle.addEventListener("change", updateThemeColor);
     </script>
   </body>
 </html>
