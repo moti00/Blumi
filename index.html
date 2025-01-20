@@ -1,19 +1,24 @@
-<!-- הגדרות בסיסיות לדף -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="base.css" />
-<link rel="stylesheet" href="form.css" />
-<link rel="stylesheet" href="layout.css" />
-<link rel="stylesheet" href="components.css" />
-<link rel="stylesheet" href="time-entry.css" />
-<link rel="stylesheet" href="responsive.css" />
-<link rel="stylesheet" href="bottom-bar.css" />
-<link rel="stylesheet" href="settings.css" />
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="" id="theme-color" />
-<!-- תוספת של Apple specific tags -->
-<link rel="apple-touch-icon" href="/logo-192x192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<html dir="rtl">
+  <head>
+    <!-- הגדרות בסיסיות לדף -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="form.css" />
+    <link rel="stylesheet" href="layout.css" />
+    <link rel="stylesheet" href="components.css" />
+    <link rel="stylesheet" href="time-entry.css" />
+    <link rel="stylesheet" href="responsive.css" />
+    <link rel="stylesheet" href="bottom-bar.css" />
+    <link rel="stylesheet" href="settings.css" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="" id="theme-color" />
+    <script>
+      fetch("/manifest.json")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("theme-color").content = data.theme_color;
+        });
+    </script>
     <style>
       /* עיצוב מיכל התוכן הראשי */
       .content-container {
@@ -558,14 +563,12 @@
     <script src="time-entry.js"></script>
     <script src="view.js"></script>
     <script src="main.js"></script>
-    
-    <!-- עדכון צבע נושא -->
     <script>
       function updateThemeColor() {
         const themeColorMetaTag = document.getElementById("theme-color");
         const backgroundColor = getComputedStyle(
           document.documentElement
-        ).getPropertyValue("--background-color").trim();
+        ).getPropertyValue("--background-color");
         themeColorMetaTag.setAttribute("content", backgroundColor);
       }
 
@@ -573,21 +576,6 @@
       window.addEventListener("load", updateThemeColor);
       const darkModeToggle = document.getElementById("darkModeToggle");
       darkModeToggle.addEventListener("change", updateThemeColor);
-    </script>
-
-    <!-- רישום Service Worker -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => {
-              console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-              console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-      }
     </script>
   </body>
 </html>

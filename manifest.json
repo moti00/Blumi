@@ -1,12 +1,18 @@
 {
   "name": "בלומי פוגל",
   "short_name": "בלומי",
-  "start_url": "/",
+  "description": "אפליקציית ניהול זמן ומשימות",
+  "start_url": "/?source=pwa",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#ffa726",
   "orientation": "portrait",
   "categories": ["productivity", "utilities"],
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
   "icons": [
     {
       "src": "logo.svg",
@@ -23,7 +29,16 @@
       "src": "logo-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "type": "image/png",
+      "sizes": "1080x2340",
+      "form_factor": "narrow"
+    }
+  ],
+  "prefer_related_applications": false
 }
