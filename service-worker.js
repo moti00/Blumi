@@ -1,5 +1,5 @@
 // service-worker.js
-const CACHE_NAME = "blomi-cache-v1";
+const CACHE_NAME = "blomi-cache-v2"; // עדכן את הגרסה
 const urlsToCache = [
   "/",
   "/index.html",
@@ -67,6 +67,11 @@ self.addEventListener("fetch", (event) => {
       return fetch(event.request).then((response) => {
         // בדוק אם קיבלנו תגובה תקינה
         if (!response || response.status !== 200 || response.type !== "basic") {
+          console.error(
+            "Invalid response for caching:",
+            event.request.url,
+            response
+          );
           return response;
         }
 

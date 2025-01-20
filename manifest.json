@@ -3,13 +3,13 @@
   "short_name": "בלומי",
   "description": "אפליקציית ניהול זמן ומשימות",
   "start_url": "/?source=pwa",
-  "id": "/",
+  "id": "https://your-domain.com/?source=pwa",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#ffa726",
   "orientation": "portrait",
   "categories": ["productivity", "utilities"],
+  "dir": "rtl",
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
   },
